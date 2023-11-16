@@ -27,12 +27,18 @@ def handle_notes():
 		#each time post is called, increment the user count
 		redis.incr('posthits')
 		postCounter = str(redis.get('posthits'),'utf-8')
+		user = "user" + postCounter
+
+		# This code creates a vunerability
+		# It allows an attacker to modify any user's data
+		if request.args.get("user") is not None:
+			user = request.args.get("user")
 
 		posted_note = request.data.decode('utf-8')
 		#set userID to the the data given in post
 		#EX: user3 = mwalravens
-		redis.set("user" + postCounter, posted_note)
-		app.logger.debug("redis key: " + "user" + postCounter)
+		redis.set(user, posted_note)
+		app.logger.debug("redis key: " + user)
 		app.logger.debug("redis value: " + posted_note)
 		return {"ID": "user" + postCounter}
 
