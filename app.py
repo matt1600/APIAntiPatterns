@@ -12,20 +12,30 @@ def hello():
 	counter = str(redis.get('hits'),'utf-8')
 	return "Welcome to this webpage!, This webpage has been viewed "+counter+" time(s)"
 
+@app.before_request
 @app.route('/notes', methods = ['POST', 'GET'])
 def handle_notes():
+	app.logger.debug('Body: %s', request.get_data())
 	if request.method == 'GET':
-		note = redis.get("note")
+		user = request.args.get("user")
+		app.logger.debug("user: " + user)
+		note = redis.get(user)
+		app.logger.debug("redis key: " + user)
 		return note.decode('utf-8') if note else "No Note Found"
 
-
 	if request.method == 'POST':
-		posted_note = request.data
-		f = open("log.txt", "a")
-		f.write(request.data.decode('utf-8'))
-		f.close()
-		redis.set("note", posted_note)
-		return {"note_id": 0}
+		#each time post is called, increment the user count
+		redis.incr('posthits')
+		postCounter = str(redis.get('posthits'),'utf-8')
+
+		posted_note = request.data.decode('utf-8')
+		#set userID to the the data given in post
+		#EX: user3 = mwalravens
+		redis.set("user" + postCounter, posted_note)
+		app.logger.debug("redis key: " + "user" + postCounter)
+		app.logger.debug("redis value: " + posted_note)
+		return {"ID": "user" + postCounter}
+
 
 if __name__ == "__main__":
 	app.run(host="0.0.0.0", debug=True)
