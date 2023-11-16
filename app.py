@@ -8,19 +8,16 @@ redis = Redis(host='redis', port=6379)
 
 @app.route('/')
 def hello():
-	redis.incr('hits')
-	counter = str(redis.get('hits'),'utf-8')
 	return "Welcome to this webpage!, This webpage has been viewed "+counter+" time(s)"
 
 @app.before_request
 @app.route('/notes', methods = ['POST', 'GET'])
 def handle_notes():
-	app.logger.debug('Body: %s', request.get_data())
+	#this statement returns user information if it has already been entered with curl post
+	#returns "no note found" otherwise
 	if request.method == 'GET':
 		user = request.args.get("user")
-		app.logger.debug("user: " + user)
 		note = redis.get(user)
-		app.logger.debug("redis key: " + user)
 		return note.decode('utf-8') if note else "No Note Found"
 
 	if request.method == 'POST':
@@ -35,11 +32,9 @@ def handle_notes():
 			user = request.args.get("user")
 
 		posted_note = request.data.decode('utf-8')
-		#set userID to the the data given in post
-		#EX: user3 = mwalravens
+		#set userID to the the data given in the post comm
+		#EX: user1 = mattwalravens
 		redis.set(user, posted_note)
-		app.logger.debug("redis key: " + user)
-		app.logger.debug("redis value: " + posted_note)
 		return {"ID": "user" + postCounter}
 
 
