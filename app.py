@@ -8,9 +8,8 @@ redis = Redis(host='redis', port=6379)
 
 @app.route('/')
 def hello():
-	return "Welcome to this webpage!, This webpage has been viewed "+counter+" time(s)"
+	return "Welcome!"
 
-@app.before_request
 @app.route('/notes', methods = ['POST', 'GET'])
 def handle_notes():
 	#this statement returns user information if it has already been entered with curl post
@@ -40,3 +39,6 @@ def handle_notes():
 
 if __name__ == "__main__":
 	app.run(host="0.0.0.0", debug=True)
+
+	
+
