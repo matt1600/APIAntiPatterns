@@ -18,6 +18,8 @@ Test welcome page in browser.
 http://0.0.0.0:5000
 ```
 
+Open a new shell window, but leave previous one running. 
+
 POST using curl. This simulates user data being entered into Redis.
 
 Insert a username into the JSON field.

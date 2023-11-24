@@ -34,7 +34,7 @@ def handle_notes():
 		#set userID to the the data given in the post comm
 		#EX: user1 = mattwalravens
 		redis.set(user, posted_note)
-		return {"ID": "user" + postCounter}
+		return {"CURL SUCCESS - new ID": "user" + postCounter}
 
 
 if __name__ == "__main__":
